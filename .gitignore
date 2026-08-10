@@ -1,0 +1,19 @@
+cat > .gitignore << 'EOF'
+# 컴파일 결과물
+*.o
+*.out
+
+# 실행 파일 (리눅스는 확장자가 없어서 개별 지정)
+ch2/ch2_1
+ch2/ch2_2
+ch2/practice_1
+ch2/practice_2
+ch4/ch4_1
+
+# 에디터
+*.swp
+*~
+
+# OS
+.DS_Store
+EOF
