@@ -10,5 +10,9 @@ void randomized_quicksort(int arr[], int p, int r);
 
 int randomized_partition(int arr[], int p, int r);
 
+int hoare_partition(int arr[], int p, int r);
+
+void hoare_quicksort(int arr[], int p, int r);
+
 
 #endif

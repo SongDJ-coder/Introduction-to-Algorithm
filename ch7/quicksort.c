@@ -29,11 +29,11 @@ int partition(int arr[], int p, int r)
         {
             less_num_idx++;
             swap(arr, less_num_idx, i);
-        }
-    }
+     }
     swap(arr, less_num_idx+1, r);
 
     return less_num_idx+1;
+}
 }
 
 int randomized_partition(int arr[], int p, int r)
@@ -86,6 +86,45 @@ void randomized_quicksort(int arr[], int p, int r)
 }
 
 
+int hoare_partition(int arr[], int p, int r)
+{
+    //pivot을 초기 값으로 한다. 
+    //왼쪽에서 시작돼서 오른쪽으로 진행하고, 피봇보다 크거나 같은 수가 나올 떄까지 진행한다. 
+    //오른쪽에서 시작돼서 왼쪽으로 진행하고, 피봇보다 작거나 같은 수가 나올 떼까지 진행하다. 
+    //양 쪽에서 오는 수가 같거나 왼쪽에서 오는 수가 더 커질 경우에 종료한다. 
+    int pivot = arr[p];
+    int i = p - 1;  ///만약 i 도입 없이 진행할 경우에 어떻게 되는지 질문할 것
+    int j = r + 1;
+    while (1) 
+    {
+        do { j--; } while (arr[j] > pivot);
+        do { i++; } while (arr[i] < pivot);
+        if (i < j) swap(arr, i, j);
+        
+        else
+        {
+            printf("q=%d (p=%d r=%d)\n", j, p, r);
+             return j;
+            }
+    }
+}
+
+
+
+
+
+void hoare_quicksort(int arr[], int p, int r)
+//partition으로 재귀식 처리
+{
+    if(p >= r)
+        return;
+
+    int q = hoare_partition(arr, p, r);
+
+    hoare_quicksort(arr, p, q);
+    hoare_quicksort(arr, q+1, r);
+
+}
 
 
 

@@ -24,11 +24,11 @@ int main(void)
     int arr4[10] = {3, 3, 3, 3, 3};
     int arr5[1] = {7};
 
-    randomized_quicksort(arr, 0, 7);
-    randomized_quicksort(arr2, 0, 4);
-    randomized_quicksort(arr3, 0, 4);
-    randomized_quicksort(arr4, 0, 4);
-    randomized_quicksort(arr5, 0, 0);
+    hoare_quicksort(arr, 0, 7);
+    hoare_quicksort(arr2, 0, 4);
+    hoare_quicksort(arr3, 0, 4);
+    hoare_quicksort(arr4, 0, 4);
+    hoare_quicksort(arr5, 0, 0);
 
     PrintArray(arr, 8);
     PrintArray(arr2, 5);
