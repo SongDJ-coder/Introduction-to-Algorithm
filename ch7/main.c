@@ -3,38 +3,57 @@
 #include <time.h>
 #include <stdlib.h>
 
-void PrintArray(int * arr, int n)
+static void fill_sorted(int *arr, int n)
 {
-    for(int i = 0; i < n; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
+    for (int i = 0; i < n; i++) arr[i] = i;
 }
 
+static void fill_reverse(int *arr, int n)
+{
+    for (int i = 0; i < n; i++) arr[i] = n - i;
+}
 
+int is_sorted(int arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        if (arr[i] > arr[i+1]) return 0;
+    return 1;
+}
+
+// 알고리즘 하나를 측정
+static void measure(const char *name,
+                    void (*sort)(int*, int, int),
+                    void (*fill)(int*, int),
+                    int *arr, int n)
+{
+    fill(arr, n);
+    reset_depth();
+
+    clock_t start = clock();
+    sort(arr, 0, n - 1);
+    double sec = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+    printf("%-18s depth=%-8d %.3f sec   sorted=%d\n",
+           name, get_max_depth(), sec, is_sorted(arr, n));
+}
 
 int main(void)
 {
-    srand(time(NULL));
-    
-    int arr[10] = {2, 8, 7, 1, 3, 5, 6, 4};
-    int arr2[10] = {1, 2, 3, 4, 5};
-    int arr3[10] = {5, 4, 3, 2, 1};
-    int arr4[10] = {3, 3, 3, 3, 3};
-    int arr5[1] = {7};
+    int n = 200000;
+    int *arr = malloc(sizeof(int) * n);
+    if (arr == NULL) {
+        fprintf(stderr, "malloc failed\n");
+        return 1;
+    }
 
-    hoare_quicksort(arr, 0, 7);
-    hoare_quicksort(arr2, 0, 4);
-    hoare_quicksort(arr3, 0, 4);
-    hoare_quicksort(arr4, 0, 4);
-    hoare_quicksort(arr5, 0, 0);
+    printf("=== 정렬된 배열 (n=%d) ===\n", n);
+    measure("quicksort_tail", quicksort_tail, fill_sorted, arr, n);
+    measure("quicksort_opt",  quicksort_opt,  fill_sorted, arr, n);
 
-    PrintArray(arr, 8);
-    PrintArray(arr2, 5);
-    PrintArray(arr3, 5);
-    PrintArray(arr4, 5);
-    PrintArray(arr5, 1);
+    printf("\n=== 역순 배열 (n=%d) ===\n", n);
+    measure("quicksort_tail", quicksort_tail, fill_reverse, arr, n);
+    measure("quicksort_opt",  quicksort_opt,  fill_reverse, arr, n);
 
+    free(arr);
     return 0;
 }
