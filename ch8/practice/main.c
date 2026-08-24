@@ -3,17 +3,16 @@
 
 int compare_int(const void *a, const void *b)
 {
-    if((*(int*)a) < (*(int*)b))
+    const int *pa = (const int *)a;
+    const int *pb = (const int *)b;
+
+    if (*pa < *pb)
         return -1;
-    else if((*(int*)a) > (*(int*)b))
+    else if (*pa > *pb)
         return 1;
-    else 
+    else
         return 0;
-
 }
-
-
-
 
 
 int main(void)
