@@ -2,28 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// int main(void)
-// {
-//     int arr[6] = {0};
-
-//     int * sorted_arr = malloc(sizeof(int)*6);
-
-//     counting_sort(arr, 6, sorted_arr, 0);
-    
-//     for(int i=0; i<6; i++)
-//     {
-//         printf("%d ", sorted_arr[i]);
-
-//     }
-//     printf("\n");
-
-//     free(sorted_arr);
-// }
-
-#include "counting_sort.h"
-#include <stdio.h>
-#include <stdlib.h>
-
 static void run_test(const char *name, const int *input, size_t n, int k,
                      const int *expected)
 {
