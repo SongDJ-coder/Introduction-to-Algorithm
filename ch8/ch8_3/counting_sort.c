@@ -94,3 +94,75 @@ k 까지 배열을 선언한다. 0부터 k 까지 선언을 한다.
 배열을 뒤에서 읽어오면서 해당 인덱스에 적힌 수를 가지고 새롭게 할당된 영역의 인덱스에 넣는다.
 
 */
+int counting_sort_char(const char**arr, size_t n, const char**result_array, int k, int pos)
+/* pos는 0base로 진행한다. */
+{
+    //글자 배열을 담을 함수를 설정한다. 여러 바이트를 한번에 복사 하는 거보다 주소 값을 옮기는 것이 나음. 
+    int *alphabet = calloc(k+1, sizeof(*alphabet));
+    if(alphabet == NULL) return -1;
+
+    //몇 번째 기준으로 판단을 진행할 것인가. 
+    //자릿수를 판단해서 해당 위치부터 진행
+    for(int i = 0; i < n; i++)
+    {
+        alphabet[(int)(arr[i][pos]) - (int)('A')]++;
+    }
+
+    // 갱신이 완료된 배열의 누적 합으로 변경한다.
+    for(int i = 1; i < k+1; i ++)
+    {
+        alphabet[i] = alphabet[i-1]+alphabet[i];
+    }
+
+    //배열을 뒤에서 읽어오면서 numbers 값을 인덱스 삼아서 result_array 에 담는다.
+    for(int i = n-1; i >= 0; i--)
+    {
+        int idx = alphabet[(int)(arr[i][pos]) - (int)('A')] - 1;
+
+        result_array[idx] = arr[i];
+        alphabet[(int)(arr[i][pos]) - (int)('A')]--;
+    }
+    //for 문에서 i--의 순서가 어느 순간에 일어나느가?
+
+    free(alphabet);
+
+    return 0;
+
+}
+
+
+int counting_sort_v3(const int *arr, size_t n, int *result_array, int div, int radix)
+{
+    // radix를 이용해서 일반화 하기
+    int *numbers = calloc(radix, sizeof(int));
+    if(numbers == NULL) return -1;
+
+    //어떤 자리 수 기준으로 판단할 것인가?
+    // 자리수를 판단해서 자리 수 별로 해당 위치로 이동하는 정렬 기법 div 에 따라서 자리 수가 달라짐. 
+    for(int i = 0; i < n; i++)
+    {
+        numbers[(arr[i]/div)%radix]++;
+    }
+
+    // 갱신이 완료된 배열의 누적 합으로 변경한다.
+    for(int i = 1; i < radix; i ++)
+    {
+        numbers[i] = numbers[i-1]+numbers[i];
+    }
+
+    //배열을 뒤에서 읽어오면서 numbers 값을 인덱스 삼아서 result_array 에 담는다.
+    for(int i = n-1; i >= 0; i--)
+    {
+        int idx = numbers[(arr[i]/div)%radix] - 1;
+
+        result_array[idx] = arr[i];
+        numbers[(arr[i]/div)%radix]--;
+    }
+    //for 문에서 i--의 순서가 어느 순간에 일어나느가?
+
+    free(numbers);
+
+    return 0;
+}
+
+
