@@ -22,6 +22,24 @@ int get_max_depth(void)
 }
 
 
+/* ---- 계측 (알고리즘 아님) ------------------------------------------
+ * partition 루프 안의 비교 횟수. 9.2 의 기대 Θ(n) 을 관측하기 위해 추가.
+ * static 으로 숨기고 reset/get 만 노출한다 (reset_depth 패턴과 동일).
+ * 전역을 그대로 열면 밖에서 실수로 대입할 수 있다.
+ * ------------------------------------------------------------------ */
+static long comparison_count = 0;
+
+void reset_comparisons(void)
+{
+    comparison_count = 0;
+}
+
+long get_comparisons(void)
+{
+    return comparison_count;
+}
+
+
 static void swap(int *arr, int p, int r)
 {
     int replace;
@@ -33,18 +51,18 @@ static void swap(int *arr, int p, int r)
 
 
 int partition(int arr[], int p, int r)
-//피봇 기준으로 작은 값들의 마지막 인덱스 번호를 반환한다. 
+// pivot 이 최종적으로 자리 잡은 인덱스를 반환한다.
+// (마지막 줄에서 swap 을 하고 나서 반환하므로, 그 자리에 있는 값은 pivot 이다.
+//  "작은 값들의 마지막 인덱스"가 아니다 — 그건 반환값 - 1 이다. 9.2 에서 이 오해가
+//  세 곳에 파급되는 버그를 유발했다.)
 {
     int less_num_idx = p-1;
     int pivot = arr[r];
 
-    // 파일 상단에
-    static long partition_count = 0;
-    // partition 안에서
-    partition_count++;
-
     for(int i =p; i < r; i++)
     {
+        comparison_count++;   /* 계측: 아래 비교는 참이든 거짓이든 이미 일어났다.
+                                 if 안에 두면 "분기 선택 횟수"를 센다 (COWORK §8 13번) */
         if(arr[i] <= pivot)
         {
             less_num_idx++;

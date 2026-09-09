@@ -22,4 +22,10 @@ void reset_depth(void);
 
 int get_max_depth(void);
 
+
+/* 계측 — partition 루프 안의 비교 횟수 (알고리즘 아님) */
+void reset_comparisons(void);
+
+long get_comparisons(void);
+
 #endif

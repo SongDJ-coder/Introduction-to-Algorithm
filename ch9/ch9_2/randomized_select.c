@@ -63,6 +63,65 @@ static int randomized_helper(int * arr, int p, int r , int i)
 
 }
 
+//반복 재귀 식으러 바꿔 보기 
+
+static int randomized_helper(int * arr, int p, int r , int i)
+//int * arr, size_t n, int i, int* result
+{
+    
+    //언제 루프가 종료될 것인가? 
+    //partition에서 뽑은 값이 i 번째 수가 되는 순간이면 끝난다. 
+
+    //지금은 return되었을 때 없어지는 함수로 설정이 되어잇다. 
+
+    //이런 재귀식을 어떻게 바꿔야지 반환만 하는 함수를 없앨 수 있을끼?
+
+    //현재는 각 루프에서 반환한 값이 소급되어 올라간다. 
+
+    //소급되어 올라갈 필요 없이 그 턴이 끝났을 떄 종료된 상태면 된다. 
+
+    int start_point = p;
+    int end_point = r;
+
+    int target_point = i;
+
+    int pivot;
+    
+
+    
+    while(1)
+    {
+        pivot = randomized_partition(arr, start_point, end_point);
+
+        int less_num = pivot - start_point + 1;
+
+        if(less_num == target_point) return arr[pivot];
+
+
+
+        else if(less_num < target_point)  
+        {
+            start_point = pivot+1;
+            target_point = target_point - less_num;
+        }
+        
+
+        else
+        {
+            end_point = pivot-1;
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
+
 int randomized_select(int * arr, size_t n, int i, int* result)
 {
     int p = 0;
