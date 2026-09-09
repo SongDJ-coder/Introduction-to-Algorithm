@@ -1,53 +1,27 @@
 
 #include "randomized_select.h"
 #include "../../ch7/quicksort.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.h>     /* NULL */
 
 
-static void swap(int *arr, int p, int r)
-{
-    int replace;
-
-    replace = arr[p];
-    arr[p] = arr[r];
-    arr[r] = replace;
-}
-
-
-static int less_num(int *arr,int n, int number)
-{
-    int num = 0;
-
-    for(int i = 0; i < n; i++)
-    {
-        if(arr[i] <= number) num++;
-    }
-
-    return num;
-}
+/* 재귀 버전과 반복 버전을 둘 다 남긴다 (ch7 의 quicksort / quicksort_tail 과 같은 이유).
+ * 둘은 완전히 같은 계약을 갖는다:
+ *   A[p..r] 에서 i 번째로 작은 값을 반환. i 는 1-based.
+ *   호출자는 1 <= i <= r-p+1 을 보장해야 한다 (진입점이 검증한다).
+ *   배열을 재배치한다. */
 
 
 
-
-
-
+/* --- 재귀 버전 --------------------------------------------------------
+ * 두 재귀 호출 모두 return 직후에 할 일이 없다 = 꼬리 재귀.
+ * 그래서 아래 반복 버전으로 기계적 변환이 가능하다. */
 static int randomized_helper(int * arr, int p, int r , int i)
-//int * arr, size_t n, int i, int* result
 {
-    
+    int num = randomized_partition(arr, p, r);   // num 은 pivot 이 확정된 인덱스
 
-
-
-    int num = randomized_partition(arr, p, r);
-
-
-    int less_num = num - p + 1 ;
-
+    int less_num = num - p + 1 ;                 // pivot 의 순위 (1-based)
 
     if( less_num == i) return arr[num];
-
-
 
     else if(less_num < i)
     {
@@ -58,37 +32,22 @@ static int randomized_helper(int * arr, int p, int r , int i)
     {
         return randomized_helper(arr, p, num-1, i);
     }
-
-
-
 }
 
-//반복 재귀 식으러 바꿔 보기 
 
-static int randomized_helper(int * arr, int p, int r , int i)
-//int * arr, size_t n, int i, int* result
+/* --- 반복 버전 (연습문제 9.2-3) ---------------------------------------
+ * 재귀 깊이는 기대 O(lg n) 이지만 최악은 Theta(n) 이다.
+ * n = 10^6 이면 프레임 100만 개 -> stack overflow.
+ * 반복 버전은 프레임을 하나만 쓴다. */
+static int randomized_helper_iter(int * arr, int p, int r , int i)
 {
-    
-    //언제 루프가 종료될 것인가? 
-    //partition에서 뽑은 값이 i 번째 수가 되는 순간이면 끝난다. 
-
-    //지금은 return되었을 때 없어지는 함수로 설정이 되어잇다. 
-
-    //이런 재귀식을 어떻게 바꿔야지 반환만 하는 함수를 없앨 수 있을끼?
-
-    //현재는 각 루프에서 반환한 값이 소급되어 올라간다. 
-
-    //소급되어 올라갈 필요 없이 그 턴이 끝났을 떄 종료된 상태면 된다. 
-
     int start_point = p;
     int end_point = r;
 
     int target_point = i;
 
-    int pivot;
-    
+    int pivot;      /* 값이 아니라 인덱스다. ch7 partition 안의 pivot 은 값이니 혼동 주의 */
 
-    
     while(1)
     {
         pivot = randomized_partition(arr, start_point, end_point);
@@ -117,11 +76,6 @@ static int randomized_helper(int * arr, int p, int r , int i)
 
 
 
-
-
-
-
-
 int randomized_select(int * arr, size_t n, int i, int* result)
 {
     int p = 0;
@@ -137,52 +91,9 @@ int randomized_select(int * arr, size_t n, int i, int* result)
     if(result == NULL)
         return 1;    
 
-    *result = randomized_helper(arr, p, r, i);
+    /* 두 버전은 같은 계약을 갖는다. 검증할 쪽을 골라 끼운다.
+     *   *result = randomized_helper(arr, p, r, i);        // 재귀 — 검증 완료 14172/14172 */
+    *result = randomized_helper_iter(arr, p, r, i);     /* 반복 (9.2-3) — 검증 중 */
     return 0;
 
 }
-
-
-
-
-/*
-
-int partition(int arr[], int p, int r)
-//피봇 기준으로 작은 값들의 마지막 인덱스 번호를 반환한다. 
-{
-    int less_num_idx = p-1;
-    int pivot = arr[r];
-
-    // 파일 상단에
-    static long partition_count = 0;
-    // partition 안에서
-    partition_count++;
-
-    for(int i =p; i < r; i++)
-    {
-        if(arr[i] <= pivot)
-        {
-            less_num_idx++;
-            swap(arr, less_num_idx, i);
-     }
-    }
-    swap(arr, less_num_idx+1, r);
-    
-
-    return less_num_idx+1;
-}
-
-
-int randomized_partition(int arr[], int p, int r)
-{
-
-    int random_num = rand();
-
-    int random_idx = random_num%(r-p+1) + p;
-
-    swap(arr, r, random_idx);
-
-    return partition(arr, p, r);
-}
-
-*/
